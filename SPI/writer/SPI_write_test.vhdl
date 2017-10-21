@@ -42,7 +42,7 @@ ENTITY spi_write_tb IS
 END spi_write_tb;
 
 ARCHITECTURE behavior OF spi_write_tb IS
-    constant bauds : integer := 115200;
+    constant bauds : integer := 11520000;
 
     constant sysclk : real := 50.0e6 ; -- 50MHz
     constant N : integer :=  integer(sysclk / real(bauds));
@@ -138,9 +138,6 @@ BEGIN
       wait for 100 ns;
         spi_start_tb <= '0';
 
-
-        spi_start_tb <= '0';
-        -- rst_tb <= '1';
       -- insert stimulus here
 
       wait;

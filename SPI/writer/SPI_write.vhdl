@@ -43,24 +43,33 @@ end SPI_WRITE;
 
 architecture Behavioral of spi_write is
 
-component diviseur_programmable is
-    Generic(Nbits : integer := 32);
-    Port ( rst : in STD_LOGIC;
-           clk : in  STD_LOGIC;
-           division : in STD_LOGIC_VECTOR(Nbits-1 downto 0);
-           tc : out STD_LOGIC);
-end component;
+  component diviseur_programmable is
+      Generic(Nbits : integer := 32);
+      Port ( clk : in  STD_LOGIC;
+             rst : in  STD_LOGIC;
+             clkdiv : in std_logic_vector(Nbits-1 downto 0);
+             phase : in STD_LOGIC;
+             polarite : in STD_LOGIC;
+             tc : out  STD_LOGIC;
+             clk_out : out  STD_LOGIC);
+  end component;
 
 type Etats is (idle, bitsdata);
 signal next_etat, etat : Etats;
 signal cpt, cpt_next : STD_LOGIC_VECTOR (3 downto 0);
 signal next_data, data : STD_LOGIC_VECTOR (7 downto 0);
-signal divclk, divrst : STD_LOGIC;
+signal divclk, divrst, clkpuls : STD_LOGIC;
 
 begin
 
-   citxdiv : diviseur_programmable generic map (Nbits => 16)
-                                    port map (rst => divrst,clk => clk, division => clk_div, tc => divclk);
+    clkDiv : diviseur_programmable generic map (Nbits => 16)
+    port map(clk =>clk,
+            rst =>rst,
+            clkdiv =>clk_div,
+            phase => '0' ,
+            polarite => '1',
+            tc =>clkpuls,
+            clk_out =>divclk);
 
 registre_etat : process(clk,rst)
 begin
@@ -76,7 +85,7 @@ end process registre_etat;
 
 
 
-logic_etat: process(divclk, spi_start, etat)
+logic_etat: process(clkpuls, spi_start, etat)
 
 begin
 
@@ -100,7 +109,7 @@ case next_etat is
 
         if cpt = "1000" then
             next_etat <= idle;
-        elsif divclk = '1' then
+        elsif clkpuls = '1' then
             next_data <= '0' & data(7 downto 1);
             cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
         end if;

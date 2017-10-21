@@ -1,6 +1,6 @@
 CC=ghdl
 PROG=SPI_write
-COMPOSANT=../diviseur_programmable.vhdl
+COMPOSANT=../../Diviseur_programable/diviseur_programmable.vhdl
 SRC=$(PROG).vhdl
 VCD=$(PROG).vcd
 SRCTB=$(PROG)_test.vhdl
