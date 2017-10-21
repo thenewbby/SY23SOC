@@ -37,7 +37,7 @@ entity SPI_WRITE is
            clk : in  STD_LOGIC;
               clk_div : in  STD_LOGIC_VECTOR (15 downto 0);
            SPI_CS : out  STD_LOGIC;
-           SPI_SCK : inout  STD_LOGIC;
+           SPI_SCK : out  STD_LOGIC;
            SPI_MOSI : out  STD_LOGIC);
 end SPI_WRITE;
 
@@ -76,7 +76,7 @@ end process registre_etat;
 
 
 
-logic_etat: process(divclk)
+logic_etat: process(divclk, spi_start, etat)
 
 begin
 

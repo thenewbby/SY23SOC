@@ -124,7 +124,7 @@ BEGIN
       wait for 100 ns;
         rst_tb <= '0';
         spi_start_tb <= '1';
-      wait for 10000 ns;
+      wait for 100 ns;
         spi_start_tb <= '0';
       -- wait for 10000 ns;
       --   rst_tb <= '1';
@@ -135,7 +135,7 @@ BEGIN
         data_in_tb <= "11010101";
       wait for 100 ns;
         spi_start_tb <= '1';
-      wait for 10000 ns;
+      wait for 100 ns;
         spi_start_tb <= '0';
 
 
