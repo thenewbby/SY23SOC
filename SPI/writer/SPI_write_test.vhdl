@@ -42,7 +42,7 @@ ENTITY spi_write_tb IS
 END spi_write_tb;
 
 ARCHITECTURE behavior OF spi_write_tb IS
-    constant bauds : integer := 11520000;
+    constant bauds : integer := 115200;
 
     constant sysclk : real := 50.0e6 ; -- 50MHz
     constant N : integer :=  integer(sysclk / real(bauds));
@@ -55,7 +55,7 @@ ARCHITECTURE behavior OF spi_write_tb IS
            spi_start : in  STD_LOGIC;
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
-              clk_div : in  STD_LOGIC_VECTOR (15 downto 0);
+              clk_division : in  STD_LOGIC_VECTOR (15 downto 0);
            SPI_CS : out  STD_LOGIC;
            SPI_SCK : inout  STD_LOGIC;
            SPI_MOSI : out  STD_LOGIC);
@@ -67,7 +67,7 @@ ARCHITECTURE behavior OF spi_write_tb IS
    signal spi_start_tb : std_logic := '0';
    signal rst_tb : std_logic := '0';
    signal clk_tb : std_logic := '0';
-    signal clk_div_tb :  STD_LOGIC_VECTOR (15 downto 0);
+    signal clk_division_tb :  STD_LOGIC_VECTOR (15 downto 0);
     --BiDirs
    signal SPI_SCK_tb : std_logic;
 
@@ -75,8 +75,8 @@ ARCHITECTURE behavior OF spi_write_tb IS
    signal SPI_CS_tb : std_logic;
    signal SPI_MOSI_tb : std_logic;
 
-   constant clk_period : time := 20 ns;
-   constant clk_te_period : time := 1000 ns;
+   constant clk_period : time := 10 ns;
+   constant clk_te_period : time := 2 ns;
    -- horloge echantillonnage
    signal clk_te : STD_LOGIC := '0';
    -- definitions pour la simulation
@@ -90,7 +90,7 @@ BEGIN
           spi_start => spi_start_tb,
           rst => rst_tb,
           clk => clk_tb,
-          clk_div => clk_div_tb,
+          clk_division => clk_division_tb,
           SPI_CS => SPI_CS_tb,
           SPI_SCK => SPI_SCK_tb,
           SPI_MOSI => SPI_MOSI_tb
@@ -118,7 +118,7 @@ BEGIN
    stim_proc: process
    begin
       -- hold reset state for 100 ns.
-        clk_div_tb <= DIVTX ;
+        clk_division_tb <= DIVTX ;
         rst_tb <= '1';
         data_in_tb <= "10110111";
       wait for 100 ns;

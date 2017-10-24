@@ -35,7 +35,7 @@ entity SPI_WRITE is
            spi_start : in  STD_LOGIC;
            rst : in  STD_LOGIC;
            clk : in  STD_LOGIC;
-              clk_div : in  STD_LOGIC_VECTOR (15 downto 0);
+              clk_division : in  STD_LOGIC_VECTOR (15 downto 0);
            SPI_CS : out  STD_LOGIC;
            SPI_SCK : out  STD_LOGIC;
            SPI_MOSI : out  STD_LOGIC);
@@ -58,17 +58,17 @@ type Etats is (idle, bitsdata);
 signal next_etat, etat : Etats;
 signal cpt, cpt_next : STD_LOGIC_VECTOR (3 downto 0);
 signal next_data, data : STD_LOGIC_VECTOR (7 downto 0);
-signal divclk, divrst, clkpuls : STD_LOGIC;
+signal divclk, divrst, clk_divPuls : STD_LOGIC;
 
 begin
 
     clkDiv : diviseur_programmable generic map (Nbits => 16)
     port map(clk =>clk,
             rst =>rst,
-            clkdiv =>clk_div,
+            clkdiv =>clk_division,
             phase => '0' ,
-            polarite => '1',
-            tc =>clkpuls,
+            polarite => '0',
+            tc =>clk_divPuls,
             clk_out =>divclk);
 
 registre_etat : process(clk,rst)
@@ -85,7 +85,7 @@ end process registre_etat;
 
 
 
-logic_etat: process(clkpuls, spi_start, etat)
+logic_etat: process(clk_divPuls, spi_start, etat, clk)
 
 begin
 
@@ -93,11 +93,12 @@ next_etat <= etat;
 next_data <= data;
 cpt_next <= cpt;
 
-case next_etat is
+case etat is
     when idle =>
         SPI_MOSI <= '0';
         cpt_next <= (others => '0');
         SPI_CS <= '1';
+        SPI_SCK <= '0';
         next_data <= data_in;
         if spi_start = '1' then
             next_etat <= bitsdata;
@@ -106,10 +107,10 @@ case next_etat is
     when bitsdata =>
         SPI_CS <= '0';
         SPI_MOSI <= data(0);
-
+        SPI_SCK <= divclk;
         if cpt = "1000" then
             next_etat <= idle;
-        elsif clkpuls = '1' then
+        elsif clk_divPuls = '1' then
             next_data <= '0' & data(7 downto 1);
             cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
         end if;
