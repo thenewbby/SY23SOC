@@ -45,7 +45,6 @@ begin
           tc =>clk_divPuls,
           clk_out =>divclk);
 
-
   registre_etat : process(clk,rst)
   begin
   if rst = '1' then
@@ -58,8 +57,6 @@ begin
   end if;
 
   end process registre_etat;
-
-
 
   logic_etat: process(clk_divPuls, spi_start, etat, clk)
 
@@ -82,19 +79,14 @@ begin
 
       when bitsdata =>
           SPI_CS <= '0';
-          -- SPI_MOSI <= data(0);
-          -- SPI_SCK <= divclk;
           SPI_SCK <= divclk;
           if cpt = "1000" then
               next_etat <= idle;
           elsif clk_divPuls = '1' then
               next_data <= SPI_MISO & data(7 downto 1);
-              -- next_data <= '0' & data(7 downto 1);
               cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
           end if;
 
       end case;
   end process logic_etat;
-
-
 end architecture;

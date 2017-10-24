@@ -29,7 +29,6 @@ architecture arch of spi_read_tb is
     );
   end component;
 
-
   --Inputs
   signal data_out_tb : std_logic_vector(7 downto 0) := (others => '0');
   signal spi_start_tb : std_logic := '0';
@@ -41,8 +40,6 @@ architecture arch of spi_read_tb is
 
     --Outputs
   signal SPI_CS_tb : std_logic;
-  -- signal SPI_MISO_tb : std_logic;
-  -- signal data_out_tb : std_logic_vector(7 downto 0) := (others => '0');
 
   constant clk_period : time := 10 ns;
   constant clk_te_period : time := 2 ns;
@@ -56,7 +53,6 @@ begin
 
   -- Instantiate the Unit Under Test (UUT)
  uut: spi_read PORT MAP (
-        -- data_in => data_in_tb,
         SPI_MISO => SPI_MISO_tb,
         spi_start => spi_start_tb,
         rst => rst_tb,
@@ -104,12 +100,8 @@ begin
        wait for 100 ns ;
        spi_start_tb <= '0';
 
-
-
      -- insert stimulus here
 
      wait;
   end process;
-
-
 end architecture;
