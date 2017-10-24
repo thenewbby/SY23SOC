@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
 entity PWM is
-  port (  data_in : in std_logic_vector(7 downto 0);
+  port (  data_in_percent : in std_logic_vector(7 downto 0);
           rst, clk : in std_logic;
           clk_out : out std_logic
   );
@@ -20,7 +20,7 @@ begin
     if rst = '1' then
       cpt <= (others => '0');
     elsif rising_edge(clk) then
-      if (cpt < data_in) then
+      if (cpt < data_in_percent) then
         clk_out <= '1';
       else
         clk_out <= '0';
