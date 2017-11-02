@@ -52,7 +52,7 @@ architecture microcontroleur_architecture of microcontroleur is
 				PM_A		: in std_logic_vector(15 downto 0);
 				PM_Drd	: out std_logic_vector(15 downto 0)
 		);
-	end component pm;	
+	end component pm;
 
   component dm is
     Port ( clk : in  STD_LOGIC;
@@ -62,7 +62,7 @@ architecture microcontroleur_architecture of microcontroleur is
            rd : in  STD_LOGIC;
            wr : in  STD_LOGIC);
   end component dm;
-  
+
 component ioport is
 	 Generic (BASE_ADDR	: integer := 16#1B#);
     Port ( clk : in  STD_LOGIC;
@@ -170,16 +170,16 @@ begin
 			PM_A		=> PM_A,
 			PM_Drd	=> PM_Drd
 	);
-	
+
 	datamem : dm port map (
            clk => clk,
            addr => DM_A,
            dataread  => DM_Drd,
            datawrite => DM_Dwr,
-           rd => DM_rd, 
+           rd => DM_rd,
            wr =>	DM_wr
 	);
-	
+
 	ioportA : ioport generic map ( BASE_ADDR => 16#19# )
 	        port map (
             clk => clk,
@@ -187,11 +187,11 @@ begin
             addr => IO_A,
             ioread  => IO_Drd_mux_A,
             iowrite => IO_Dwr,
-            rd => IO_rd, 
+            rd => IO_rd,
             wr =>	IO_wr,
 			   ioport => PORTA
-	        );	
-			  
+	        );
+
 	ioportB : ioport generic map ( BASE_ADDR => 16#16# )
 	        port map (
             clk => clk,
@@ -199,11 +199,11 @@ begin
             addr => IO_A,
             ioread  => IO_Drd_mux_B,
             iowrite => IO_Dwr,
-            rd => IO_rd, 
+            rd => IO_rd,
             wr =>	IO_wr,
 			   ioport => PORTB
-	        );	
-			  
+	        );
+
 	timerA : timer generic map ( BASE_ADDR => 16#2D# )
 	        port map (
             clk => clk,
@@ -211,11 +211,11 @@ begin
             addr => IO_A,
             ioread  => IO_Drd_mux_TIMER,
             iowrite => IO_Dwr,
-            rd => IO_rd, 
+            rd => IO_rd,
             wr =>	IO_wr,
 			   OC1A => OC1A,
 				OC1Abar => OC1Abar
-	        );		
+	        );
 
 	usispi : usi generic map ( BASE_ADDR => 16#0D# )
 	        port map (
@@ -224,13 +224,13 @@ begin
             addr => IO_A,
             ioread  => IO_Drd_mux_USI,
             iowrite => IO_Dwr,
-            rd => IO_rd, 
+            rd => IO_rd,
             wr =>	IO_wr,
             SCK => SCK,
             MOSI => MOSI,
             MISO => MISO
-	        );				  
-			  
+	        );
+
 	datamux: IODrdmux generic map (ADDR_0 => 16#19#,LG_0 => 2,
                                   ADDR_1 => 16#16#, LG_1 => 2,
 											 ADDR_2 => 16#2D#, LG_2 => 3,
@@ -246,4 +246,3 @@ begin
 
 
 end microcontroleur_architecture;
-
