@@ -30,10 +30,12 @@ int main(void) {
 	
 	unsigned char tmp;
 	
-   	tmp = 0;		
+	DDRA = 0xff;
+	DDRB = 0;
+   	tmp = PORTB;		
 	while (1) {
 		PORTA = tmp;
-		delai(100000);
+		delai(1);
 		tmp += 1;
 	}
 	return 0;
