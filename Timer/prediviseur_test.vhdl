@@ -1,1 +1,0 @@
---test bench file for prediviseur component
