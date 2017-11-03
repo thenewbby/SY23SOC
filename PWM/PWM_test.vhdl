@@ -14,12 +14,13 @@ architecture tb_arch of PWM_tb  is
 
   component PWM is
     port (  cpt_max, OCR1x_in : in std_logic_vector(7 downto 0);
+            data_out : out std_logic_vector(7 downto 0);
             mode_sortie : in std_logic_vector(1 downto 0);
             force, active, PFC_mode, out_inverse, rst, clk : in std_logic;
             OC1x, OC1xbar : out std_logic);
   end component;
 
-  signal cpt_max_tb, OCR1x_in_tb : std_logic_vector(7 downto 0);
+  signal cpt_max_tb, OCR1x_in_tb, data_out_tb : std_logic_vector(7 downto 0);
   signal mode_sortie_tb : std_logic_vector(1 downto 0);
   signal rst_tb, clk_tb, force_tb, active_tb, PFC_mode_tb, out_inverse_tb : std_logic;
   signal OC1x_tb, OC1xbar_tb : std_logic;
@@ -36,6 +37,7 @@ begin
 
   PWM_1 : PWM port map(cpt_max => cpt_max_tb ,
                        OCR1x_in => OCR1x_in_tb,
+                       data_out => data_out_tb,
                        mode_sortie => mode_sortie_tb,
                        force => force_tb,
                        active => active_tb,
@@ -71,18 +73,18 @@ begin
     out_inverse_tb <= '0'; --Pas d'inversion de sortie
     mode_sortie_tb <= "01";
     cpt_max_tb <= "11111111";
-    OCR1x_in_tb <= "10001000"; -- Rapport 75%
+    OCR1x_in_tb <= "11000000"; -- Rapport
     wait for 20 ns;
     rst_tb <= '0';
 
-    wait for 10000 ns;
-    OCR1x_in_tb <= "00001000"; -- Rapport 25%
+    wait for 7000 ns;
+    OCR1x_in_tb <= "00000001"; -- Rapport 25%
 
-    wait for 10000 ns;
-    OCR1x_in_tb <= "10001000"; -- Rapport 25%
-    mode_sortie_tb <= "10"; -- déconnecte sortie inverse
+    --wait for 7000 ns;
+    --OCR1x_in_tb <= "10000000"; -- Rapport
+    --mode_sortie_tb <= "10"; -- déconnecte sortie inverse
 
-    wait for 10000 ns;
+    wait for 7000 ns;
     rst_tb <= '1';
     wait for 20 ns;
   end process;
@@ -105,6 +107,7 @@ begin
       write(s, rst_tb);write(s, string'("    "));
       write(s, OC1x_tb);write(s, string'("    "));
       write(s, OC1xbar_tb);write(s, string'("    "));
+      write(s, data_out);write(s, string'("    "));
       writeline(machine_etat_file,s);
       temps := temps + dT;
     end if;
