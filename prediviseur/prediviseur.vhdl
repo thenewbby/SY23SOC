@@ -28,18 +28,24 @@ begin
 
   comptage : process(clk)
   begin
-    if rising_edge(clk) then
-      if rst = '1' or rst_addr_decoder = '1' then
-        cpt <= (others => '0');
-        clk_out <= '0';
-      elsif bus_div = "00" then
-        clk_out <= clk;
-      elsif cpt < std_logic_vector(unsigned(cpt_max) - 1) then
-        cpt <= std_logic_vector(unsigned(cpt) + 1);
-      elsif cpt = cpt_max then
-        clk_out <= '1';
-        cpt <= "000";
-      end if;
+    --if rising_edge(clk) then
+    if rst = '1' or rst_addr_decoder = '1' then
+      cpt <= (others => '0');
+      clk_out <= '0';
+    elsif bus_div = "00" then
+      clk_out <= clk;
     end if;
+    if cpt < std_logic_vector(unsigned(cpt_max) - 1) then
+      cpt <= std_logic_vector(unsigned(cpt) + 1);
+      clk_out <= '0';
+    end if;
+
+    if cpt = cpt_max then
+      clk_out <= '1';
+      cpt <= (others => '0');
+  --  else
+    --  clk_out <= 'Z';
+    end if;
+    --end if;
   end process;
 end architecture;
