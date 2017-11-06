@@ -34,15 +34,15 @@ signal reg_TCCR1B : STD_LOGIC_VECTOR (7 downto 0);
 begin
 
 pwm_1 : pwm port map(
-  cpt_max => ,
-  OCR1x_in => ,
-  mode_sortie => ,
+  -- cpt_max => ,
+  OCR1x_in => reg_OCR1A,
+  mode_sortie => reg_TCCR1A(7 downto 6),
   force => ,
   active => ,
   PFC_mode => ,
   out_inverse => ,
-  rst => ,
-  clk => ,
+  rst => Rst,
+  clk => clk,
   OC1x => OC1A,
   OC1xbar => OC1Abar
 );
@@ -50,10 +50,11 @@ pwm_1 : pwm port map(
   proc : process(clk, rst)
     variable adr_int : natural;
     variable rdwr : std_logic_vector(1 downto 0);
+		variable PFC_montant : natural;
   begin
 
     if Rst = '1' then
-
+			reg_TCNT1 <= (others => '0');
 
     elsif rising_edge(clk) then
       adr_int := CONV_INTEGER(unsigned(addr));
@@ -66,12 +67,12 @@ pwm_1 : pwm port map(
           reg_OCR1A <= iowrite;
         end if;
 
-      elsif adr_int = TCNT1 then
+      elsif adr_int = reg_TCNT1 then
 
         if rdwr = "10" then
-          ioread <= reg_TCNT1;
+          ioread <= reg_reg_TCNT1;
         elsif rdwr = "01" then
-          reg_TCNT1 <= iowrite;
+          reg_reg_TCNT1 <= iowrite;
         end if;
 
       elsif adr_int = TCCR1B then
@@ -89,6 +90,24 @@ pwm_1 : pwm port map(
         elsif rdwr = "01" then
           reg_TCCR1A <= iowrite;
         end if;
+
+				if (PFC_mode = '0') then --Fast PWM Mode
+	          reg_TCNT1 <= std_logic_vector(unsigned(cpt) + 1);
+	      end if;
+	    elsif (PFC_mode = '1') then --Phase and frequency correct PWM
+	      if (reg_TCNT1 < OCR1x_in)  then
+	        if PFC_montant = 1 or  reg_TCNT1 = "00000000" then
+	          reg_TCNT1 <= std_logic_vector(unsigned(cpt) + 1);
+	        elsif PFC_montant = 0 then
+	          reg_TCNT1 <= std_logic_vector(unsigned(cpt) - 1);
+	        end if;
+	      else
+	        if PFC_montant = 1 then
+	          reg_TCNT1 <= std_logic_vector(unsigned(cpt) + 1);
+	        elsif PFC_montant = 0 or reg_TCNT1 = cpt_max then
+	          reg_TCNT1 <= std_logic_vector(unsigned(cpt) - 1);
+	        end if;
+	      end if;
 
       end if;
 
