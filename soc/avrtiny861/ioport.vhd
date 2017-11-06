@@ -57,22 +57,21 @@ begin
 	      elsif addr = PIN_ADDR then
 							if rdwr = "10" then
 								ioread <= pin_reg;
-							elsif rdwr = "01" then
-								pin_reg <= iowrite;
 							end if;
 	      end if;
 
-	      bits_port : for i in 0 to 7 loop
-	        if ddr_reg(i) = '0' then
-	          port_reg(i) <= 'Z';
-	        end if;
-	      end loop;
+	      -- bits_port : for i in 0 to 7 loop
+	      --   if ddr_reg(i) = '0' then
+	      --     port_reg(i) <= 'Z';
+	      --   end if;
+	      -- end loop;
 
 	      read_write : for i in 0 to 7 loop
 	        if ddr_reg(i) = '1' then --sortie
 	          ioport(i) <= port_reg(i);
 	          pin_reg(i) <= '0';
 	        elsif ddr_reg(i) = '0' then --entrée
+						port_reg(i) <= 'Z';
 	          pin_reg(i) <= ioport(i);
 	        end if;
 	      end loop;
