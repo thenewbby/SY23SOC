@@ -12,7 +12,7 @@ end entity;
 
 architecture arch_PWM of PWM is
   signal OC1x_interne : std_logic;
-  signal max_vect : std_logic_vector(7 downto 0);
+  signal max_vect,cpt_interne : std_logic_vector(7 downto 0);
 
   max_vect <= (others => '1');
 
@@ -28,15 +28,15 @@ begin
     variable PFC_montant : natural;
   begin
     --OC1x <= '0';
-
+    cpt_interne <= cpt;
     if rst = '1' then
-      cpt <= (others => '0');
+      cpt_intere <= (others => '0');
       PFC_montant := 1;
     elsif rising_edge(clk) then
       if (PFC_mode = '0') then --Fast PWM Mode
-        if cpt < OCR1x_in then
+        if cpt_interne < OCR1x_in then
           OC1x_interne <= '0';
-          cpt <= std_logic_vector(unsigned(cpt) + 1);
+          cpt_interne <= std_logic_vector(unsigned(cpt) + 1);
         elsif (cpt < max_vect) then
           OC1x_interne <= '1';
           cpt <= std_logic_vector(unsigned(cpt) + 1);
