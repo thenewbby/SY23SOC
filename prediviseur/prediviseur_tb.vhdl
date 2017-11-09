@@ -74,11 +74,11 @@ BEGIN
       rst_tb <= '1';
       wait for 100 ns;
 
-      pow_div_tb <= "01";
+      pow_div_tb <= "00";
       rst_tb <= '0';
       wait for 1000 ns;
 
-      pow_div_tb <= "00";
+      pow_div_tb <= "01";
       wait for 1000 ns;
 
       pow_div_tb <= "10";

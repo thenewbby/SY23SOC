@@ -15,6 +15,7 @@ end prediviseur;
 
 architecture Behavioral of prediviseur is
 
+shared variable state : integer;
 signal cpt, cpt_next, clk_div : integer;
 signal clk_interne : std_logic;
 signal null_vect : std_logic_vector(N-1 downto 0);
@@ -37,9 +38,13 @@ end process counter;
 
 clock_out : process(clk_interne)
 begin
-  if rising_edge(clk_interne) then
-      clk_out <= clk_interne;
-  end if;
+  if rising_edge(clk_interne) and state = 1 then
+      clk_out <= '0';
+			state := 0;
+	elsif rising_edge(clk_interne) and state = 0 then
+		clk_out <= '1';
+		state := 1;
+	end if;
 end process;
 
 synchro : process(clk, rst)
@@ -48,6 +53,7 @@ begin
 	if rst = '1' then
 
 		cpt <= 0;
+		state := 0;
 
 	else if rising_edge(clk) then
 
