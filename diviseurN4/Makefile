@@ -1,8 +1,8 @@
 CC=ghdl
-PROG=diviseur_programmable
+PROG=diviseurN4
 SRC=$(PROG).vhdl
 VCD=$(PROG).vcd
-SRCTB=$(PROG)_test.vhdl
+SRCTB=$(PROG)_tb.vhdl
 ENTITE=$(PROG)_tb
 OPTIONS= --ieee=synopsys -fexplicit
 AOPTIONS= -Wc,-m32 -Wa,--32

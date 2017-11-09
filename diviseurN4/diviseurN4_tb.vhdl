@@ -23,7 +23,7 @@ ARCHITECTURE behavior OF diviseurN4_tb IS
    --Inputs
    signal clk_tb : std_logic := '0';
    signal rst_tb : std_logic := '1';
-   signal pow_div_tb : std_logic_vector(1 downto 0);
+   signal pow_div_tb : std_logic_vector(3 downto 0);
 
  	--Outputs
 
@@ -41,7 +41,7 @@ ARCHITECTURE behavior OF diviseurN4_tb IS
 BEGIN
 
 	-- Instantiate the Unit Under Test (UUT)
-   uut: prediviseur PORT MAP (
+   uut: diviseurN4 PORT MAP (
           clk => clk_tb,
           rst => rst_tb,
           pow_div => pow_div_tb,
@@ -74,23 +74,39 @@ BEGIN
       rst_tb <= '1';
       wait for 100 ns;
 
-      pow_div_tb <= "00";
+      pow_div_tb <= "0000";
       rst_tb <= '0';
       wait for 1000 ns;
 
-      pow_div_tb <= "01";
+      pow_div_tb <= "0001";
       wait for 1000 ns;
 
-      pow_div_tb <= "10";
+      pow_div_tb <= "0010";
       wait for 1000 ns;
 
-      pow_div_tb <= "11";
+      pow_div_tb <= "0011";
       wait for 1000 ns;
+
+      pow_div_tb <= "0100";
+      wait for 1000 ns;
+
+      pow_div_tb <= "0101";
+      wait for 1000 ns;
+
+      pow_div_tb <= "0110";
+      wait for 1000 ns;
+
+      pow_div_tb <= "0111";
+      wait for 1000 ns;
+
+      pow_div_tb <= "1000";
+      wait for 1000 ns;
+
 
    end process;
 
    resultats: process(clk_te)
-     file machine_etat_file: text open WRITE_MODE is "prediviseur.txt";
+     file machine_etat_file: text open WRITE_MODE is "diviseurN4.txt";
      variable s : line;
      variable temps :  real := 0.0;
    begin

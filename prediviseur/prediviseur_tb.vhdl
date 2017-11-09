@@ -90,7 +90,7 @@ BEGIN
    end process;
 
    resultats: process(clk_te)
-     file machine_etat_file: text open WRITE_MODE is "power_clock_divider.txt";
+     file machine_etat_file: text open WRITE_MODE is "prediviseur.txt";
      variable s : line;
      variable temps :  real := 0.0;
    begin
