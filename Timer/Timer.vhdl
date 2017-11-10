@@ -18,24 +18,49 @@ end timer;
 
 architecture timer_architecture of timer is
 
+COMPONENT PWM
+Port (cpt_max, OCR1x_in : in std_logic_vector(7 downto 0);
+				data_out : out std_logic_vector(7 downto 0);
+				mode_sortie : in std_logic_vector(1 downto 0);
+				force, active, PFC_mode, out_inverse, rst, clk : in std_logic;
+				OC1x, OC1xbar : out std_logic
+);
+end COMPONENT;
 
+COMPONENT prediviseur
+port (clk : in std_logic;
+		rst,rst_addr : in std_logic;
+		pow_div : in std_logic_vector(1 downto 0);
+		clk_out : out std_logic);
+	end component;
+
+COMPONENT diviseurN4
+Port (clk : in std_logic;
+		rst : in std_logic;
+		pow_div : in std_logic_vector(3 downto 0);
+		clk_out : out std_logic);
+	end component;
 
 constant OCR1A : integer := BASE_ADDR ;
 constant TCNT1 : integer := BASE_ADDR + 1;
 constant TCCR1B : integer := BASE_ADDR + 2;
 constant TCCR1A : integer := BASE_ADDR + 3;
+constant TCCR1C : integer := BASE_ADDR - 6;
+constant TCCR1D : integer := BASE_ADDR - 7;
 
 signal reg_OCR1A : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCNT1 : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCCR1A : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCCR1B : STD_LOGIC_VECTOR (7 downto 0);
-signal clk_predivDiv : std_logic;
+signal reg_TCCR1C : STD_LOGIC_VECTOR (7 downto 0);
+signal reg_TCCR1D : STD_LOGIC_VECTOR (7 downto 0);
+signal clk_predivDiv, clk_PWM : std_logic;
 
 
 begin
 
 pwm_1 : pwm port map(
-  -- cpt_max => ,
+  cpt_max => reg_TCNT1,
   OCR1x_in => reg_OCR1A,
   mode_sortie => reg_TCCR1A(7 downto 6),
   force => reg_TCCR1A(3),
@@ -43,23 +68,26 @@ pwm_1 : pwm port map(
   PFC_mode => reg_TCCR1D(0),
   out_inverse => reg_TCCR1B(7),
   rst => Rst,
-  clk => clk,
+  clk => clk_PWM,
   OC1x => OC1A,
   OC1xbar => OC1Abar,
   data_out => reg_TCNT1(7 downto 0)
 );
 
 prediv : prediviseur port map(
-  rst_addr_decoder <= reg_TCCR1B(6),
-  rst <= Rst,
-  clk <= clk,
-  bus_div <= reg_TCCR1B(5 downto 4),
-  clk_out <= clk_predivDiv
+  rst_addr => reg_TCCR1B(6),
+  rst => Rst,
+  clk => clk,
+  pow_div => reg_TCCR1B(5 downto 4),
+  clk_out => clk_predivDiv
 );
 
-divGeneral : diviseur port map(
-
-)
+divGeneral : diviseurN4 port map(
+	clk => clk_predivDiv,
+	rst => Rst,
+	pow_div => reg_TCCR1B (3 downto 0),
+	clk_out => clk_PWM
+);
 
   proc : process(clk, rst)
     variable adr_int : natural;
@@ -71,7 +99,7 @@ divGeneral : diviseur port map(
 			reg_TCNT1 <= (others => '0');
 
     elsif rising_edge(clk) then
-      adr_int := CONV_INTEGER(unsigned(addr));
+      adr_int := TO_INTEGER(unsigned(addr));
       rdwr := rd & wr;
       if adr_int = OCR1A then
 
@@ -81,12 +109,12 @@ divGeneral : diviseur port map(
           reg_OCR1A <= iowrite;
         end if;
 
-      elsif adr_int = reg_TCNT1 then
+      elsif adr_int = TCNT1 then
 
         if rdwr = "10" then
-          ioread <= reg_reg_TCNT1;
+          ioread <= reg_TCNT1;
         elsif rdwr = "01" then
-          reg_reg_TCNT1 <= iowrite;
+          reg_TCNT1 <= iowrite;
         end if;
 
       elsif adr_int = TCCR1B then
