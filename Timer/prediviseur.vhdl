@@ -19,13 +19,17 @@ shared variable state : integer;
 signal cpt, cpt_next, clk_div : integer;
 signal clk_interne : std_logic;
 signal null_vect : std_logic_vector(N-1 downto 0);
-signal undet_vect : std_logic_vector(N-1 downto 0);
 begin
+
+null_vect <= (others => '0');
 
 counter : process(cpt, clk_div,pow_div)
 begin
-
-  clk_div <= 2**to_integer(unsigned(pow_div))-1;
+	if pow_div = null_vect then
+		clk_div <= 0;
+	else
+		clk_div <= 2**(to_integer(unsigned(pow_div))-1);
+	end if;
 
  if cpt = clk_div then
      clk_interne <= '1';
