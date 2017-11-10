@@ -24,7 +24,6 @@ signal undet_vect : std_logic_vector(N-1 downto 0);
 begin
 
 	null_vect <= (others => '0');
-  undet_vect <= (others => 'U');
 
 counter : process(clk, rst, cpt, clk_div,pow_div, clk_interne)
 begin
@@ -50,7 +49,7 @@ begin
 		end if;
 
 
-  if (pow_div = null_vect) or (pow_div = undet_vect)then
+  if (pow_div = null_vect) then
     clk_interne <= '0';
   else
     clk_div <= 2**(to_integer(unsigned(pow_div)) -1);
