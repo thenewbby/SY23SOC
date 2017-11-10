@@ -24,14 +24,14 @@ signal undet_vect : std_logic_vector(N-1 downto 0);
 begin
 
 	null_vect <= (others => '0');
-
+	clk_out <= clk_interne;
 counter : process(clk, rst, cpt, clk_div,pow_div, clk_interne)
 begin
 
 	if rst = '1' then
 
 		cpt_next <= 0;
-		state:=0;
+		-- state:=0;
 
 	else
 		if rising_edge(clk) then
@@ -40,13 +40,13 @@ begin
 
 		end if;
 
-		if rising_edge(clk_interne) and state = 1 then
-				clk_out <= '0';
-				state := 0;
-		elsif rising_edge(clk_interne) and state = 0 then
-			clk_out <= '1';
-			state := 1;
-		end if;
+		-- if rising_edge(clk_interne) and state = 1 then
+		-- 		clk_out <= '0';
+		-- 		state := 0;
+		-- elsif rising_edge(clk_interne) and state = 0 then
+		-- 	clk_out <= '1';
+		-- 	state := 1;
+		-- end if;
 
 
   if (pow_div = null_vect) then
