@@ -105,20 +105,20 @@ BEGIN
 
    end process;
 
-   resultats: process(clk_te)
-     file machine_etat_file: text open WRITE_MODE is "diviseurN4.txt";
-     variable s : line;
-     variable temps :  real := 0.0;
-   begin
-     if rising_edge(clk_te) then
-       write(s, temps);write(s, string'("    "));
-       write(s, rst_tb);write(s, string'("    "));
-       write(s, clk_tb);write(s, string'("    "));
-       write(s, pow_div_tb);write(s, string'("    "));
-       write(s, clk_out_tb);write(s, string'("    "));
-       writeline(machine_etat_file,s);
-       temps := temps + dT;
-     end if;
-   end process resultats;
+  --  resultats: process(clk_te)
+  --    file machine_etat_file: text open WRITE_MODE is "diviseurN4.txt";
+  --    variable s : line;
+  --    variable temps :  real := 0.0;
+  --  begin
+  --    if rising_edge(clk_te) then
+  --      write(s, temps);write(s, string'("    "));
+  --      write(s, rst_tb);write(s, string'("    "));
+  --      write(s, clk_tb);write(s, string'("    "));
+  --      write(s, pow_div_tb);write(s, string'("    "));
+  --      write(s, clk_out_tb);write(s, string'("    "));
+  --      writeline(machine_etat_file,s);
+  --      temps := temps + dT;
+  --    end if;
+  --  end process resultats;
 
 END;
