@@ -1,7 +1,7 @@
 CC=ghdl
 PROG=Timer
 SRC=$(PROG).vhdl
-MOD1=diviseurN4.vhdl
+MOD1=../diviseurN4/diviseurN4.vhdl
 MOD2=prediviseur.vhdl
 MOD3=PWM.vhdl
 VCD=$(PROG).vcd

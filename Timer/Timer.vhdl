@@ -20,8 +20,8 @@ end timer;
 architecture timer_architecture of timer is
 
 COMPONENT PWM
-Port (cpt_max, OCR1x_in : in std_logic_vector(7 downto 0);
-				data_out : out std_logic_vector(7 downto 0);
+Port (cpt, OCR1x_in : in std_logic_vector(7 downto 0);
+				-- data_out : out std_logic_vector(7 downto 0);
 				mode_sortie : in std_logic_vector(1 downto 0);
 				force, active, PFC_mode, out_inverse, rst, clk : in std_logic;
 				OC1x, OC1xbar : out std_logic
@@ -63,7 +63,7 @@ signal clk_predivDiv, clk_PWM : std_logic;
 begin
 
 pwm_1 : pwm port map(
-  cpt_max => reg_TCNT1(7 downto 0),
+  cpt => reg_TCNT1(7 downto 0),
   OCR1x_in => reg_OCR1A,
   mode_sortie => reg_TCCR1A(7 downto 6),
   force => reg_TCCR1A(3),
@@ -73,8 +73,8 @@ pwm_1 : pwm port map(
   rst => Rst,
   clk => clk_PWM,
   OC1x => OC1A,
-  OC1xbar => OC1Abar,
-  data_out => reg_TCNT1(7 downto 0)
+  OC1xbar => OC1Abar
+  -- data_out => reg_TCNT1(7 downto 0)
 );
 
 prediv : prediviseur port map(
@@ -139,6 +139,24 @@ divGeneral : diviseurN4 port map(
         end if;
       end if;
 
+			if (reg_TCCR1D(0) = '0') then --Fast PWM Mode
+        reg_TCNT1 <= std_logic_vector(unsigned(reg_TCNT1) + 1);
+
+			elsif (reg_TCCR1D(0) = '1') then --Phase and frequency correct PWM
+				if (reg_TCNT1 < reg_OCR1A)  then
+					if PFC_montant = 1 or  reg_TCNT1 = "00000000" then
+						reg_TCNT1 <= std_logic_vector(unsigned(reg_TCNT1) + 1);
+					elsif PFC_montant = 0 then
+						reg_TCNT1 <= std_logic_vector(unsigned(reg_TCNT1) - 1);
+					end if;
+				elsif (reg_TCNT1 <= "11111111") then
+					if PFC_montant = 1 then
+						reg_TCNT1 <= std_logic_vector(unsigned(reg_TCNT1) + 1);
+					elsif PFC_montant = 0 or reg_TCNT1 = "11111111" then
+						reg_TCNT1 <= std_logic_vector(unsigned(reg_TCNT1) - 1);
+					end if;
+				end if;
+			end if;
     end if;
 end process;
 
