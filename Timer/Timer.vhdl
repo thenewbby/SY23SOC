@@ -60,7 +60,7 @@ signal clk_predivDiv, clk_PWM : std_logic;
 begin
 
 pwm_1 : pwm port map(
-  cpt_max => reg_TCNT1,
+  cpt_max => reg_TCNT1(7 downto 0),
   OCR1x_in => reg_OCR1A,
   mode_sortie => reg_TCCR1A(7 downto 6),
   force => reg_TCCR1A(3),

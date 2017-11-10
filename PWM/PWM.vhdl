@@ -13,7 +13,7 @@ end entity;
 architecture arch_PWM of PWM is
   --signal cpt : std_logic_vector(7 downto 0);
   signal OC1x_interne : std_logic;
-  signal cpt_interne : std_logic_vector(7 downto 0);
+  signal cpt_interne, cpt_interne_next : std_logic_vector(7 downto 0);
 begin
   --if force = '1' generate
   --  OC1x <= '1';
@@ -28,11 +28,11 @@ begin
     --OC1x <= '0';
     cpt_interne <= cpt;
     if rst = '1' then
-      cpt_interne <= (others => '0');
+      cpt_interne_next <= (others => '0');
       PFC_montant := 1;
     elsif rising_edge(clk) then
       if (PFC_mode = '0') then --Fast PWM Mode
-        cpt_interne <= std_logic_vector(unsigned(cpt_interne) + 1);
+        cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
 
         if cpt_interne < OCR1x_in then
           OC1x_interne <= '0';
@@ -43,24 +43,24 @@ begin
         --  cpt_interne <= (others => '0');
         end if;
       end if;
-  --  elsif (PFC_mode = '1') then --Phase and frequency correct PWM
-  --    if (cpt_interne < OCR1x_in)  then
-  --      OC1x_interne <= '0';
-  --      if PFC_montant = 1 or  cpt = "00000000" then
-  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) + 1);
-  --        PFC_montant := 1;
-  --      elsif PFC_montant = 0 then
-  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) - 1);
-  --      end if;
-  --    elsif (cpt_interne <= "11111111") then
-  --      OC1x_interne <= '1';
-  --      if PFC_montant = 1 then
-  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) + 1);
-  --      elsif PFC_montant = 0 or cpt = "11111111" then
-  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) - 1);
-  --        PFC_montant := 0;
-  --      end if;
-  --    end if;
+   elsif (PFC_mode = '1') then --Phase and frequency correct PWM
+     if (cpt_interne < OCR1x_in)  then
+       OC1x_interne <= '0';
+       if PFC_montant = 1 or  cpt = "00000000" then
+         cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
+         PFC_montant := 1;
+       elsif PFC_montant = 0 then
+         cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) - 1);
+       end if;
+     elsif (cpt_interne <= "11111111") then
+       OC1x_interne <= '1';
+       if PFC_montant = 1 then
+         cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
+       elsif PFC_montant = 0 or cpt = "11111111" then
+         cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) - 1);
+         PFC_montant := 0;
+       end if;
+     end if;
     end if;
 
     if (active = '1') then
@@ -82,6 +82,6 @@ begin
       OC1x <= '1';
       OC1xbar <= '0';
     end if;
-    data_out <= cpt_interne;
+    data_out <= cpt_interne_next;
   end process;
 end architecture;
