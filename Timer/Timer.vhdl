@@ -14,6 +14,7 @@ entity timer is
            wr : in  STD_LOGIC;
 		       OC1A : out  STD_LOGIC;
 		       OC1Abar : out  STD_LOGIC);
+
 end timer;
 
 architecture timer_architecture of timer is
@@ -48,6 +49,7 @@ constant TCCR1A : integer := BASE_ADDR + 3;
 constant TCCR1C : integer := BASE_ADDR - 6;
 constant TCCR1D : integer := BASE_ADDR - 7;
 
+
 signal reg_OCR1A : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCNT1 : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCCR1A : STD_LOGIC_VECTOR (7 downto 0);
@@ -55,6 +57,7 @@ signal reg_TCCR1B : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCCR1C : STD_LOGIC_VECTOR (7 downto 0);
 signal reg_TCCR1D : STD_LOGIC_VECTOR (7 downto 0);
 signal clk_predivDiv, clk_PWM : std_logic;
+
 
 
 begin
@@ -87,6 +90,7 @@ divGeneral : diviseurN4 port map(
 	rst => Rst,
 	pow_div => reg_TCCR1B (3 downto 0),
 	clk_out => clk_PWM
+
 );
 
   proc : process(clk, rst)
@@ -100,6 +104,7 @@ divGeneral : diviseurN4 port map(
 
     elsif rising_edge(clk) then
       adr_int := TO_INTEGER(unsigned(addr));
+
       rdwr := rd & wr;
       if adr_int = OCR1A then
 

@@ -2,3 +2,10 @@
 *.vcd
 *.cf
 *_tb
+*.txt
+*.s
+*.d
+*.lss
+*.map
+*.elf
+*.hex
