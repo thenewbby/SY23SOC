@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
 entity PWM is -- Tu utilisais PWM et pas PWM_1
-  port (  cpt_max, OCR1x_in : in std_logic_vector(7 downto 0);
+  port (  cpt, OCR1x_in : in std_logic_vector(7 downto 0);
           data_out : out std_logic_vector(7 downto 0);
           mode_sortie : in std_logic_vector(1 downto 0);
           force, active, PFC_mode, out_inverse, rst, clk : in std_logic;
@@ -11,9 +11,9 @@ entity PWM is -- Tu utilisais PWM et pas PWM_1
 end entity;
 
 architecture arch_PWM of PWM is
-  signal cpt : std_logic_vector(7 downto 0);
+  --signal cpt : std_logic_vector(7 downto 0);
   signal OC1x_interne : std_logic;
-
+  signal cpt_interne : std_logic_vector(7 downto 0);
 begin
   --if force = '1' generate
   --  OC1x <= '1';
@@ -26,41 +26,41 @@ begin
     variable PFC_montant : natural;
   begin
     --OC1x <= '0';
-
+    cpt_interne <= cpt;
     if rst = '1' then
-      cpt <= (others => '0');
+      cpt_interne <= (others => '0');
       PFC_montant := 1;
     elsif rising_edge(clk) then
       if (PFC_mode = '0') then --Fast PWM Mode
-        if cpt < OCR1x_in then
+        cpt_interne <= std_logic_vector(unsigned(cpt_interne) + 1);
+
+        if cpt_interne < OCR1x_in then
           OC1x_interne <= '0';
-          cpt <= std_logic_vector(unsigned(cpt) + 1);
-        elsif (cpt < cpt_max) then
+        elsif (cpt_interne < "11111111") then
           OC1x_interne <= '1';
-          cpt <= std_logic_vector(unsigned(cpt) + 1);
-        else
-          OC1x_interne <= '0';
-          cpt <= (others => '0');
+        --else
+        --  OC1x_interne <= '0';
+        --  cpt_interne <= (others => '0');
         end if;
       end if;
-    elsif (PFC_mode = '1') then --Phase and frequency correct PWM
-      if (cpt < OCR1x_in)  then
-        OC1x_interne <= '0';
-        if PFC_montant = 1 or  cpt = "00000000" then
-          cpt <= std_logic_vector(unsigned(cpt) + 1);
-          PFC_montant := 1;
-        elsif PFC_montant = 0 then
-          cpt <= std_logic_vector(unsigned(cpt) - 1);
-        end if;
-      elsif (cpt <= cpt_max) then
-        OC1x_interne <= '1';
-        if PFC_montant = 1 then
-          cpt <= std_logic_vector(unsigned(cpt) + 1);
-        elsif PFC_montant = 0 or cpt = cpt_max then
-          cpt <= std_logic_vector(unsigned(cpt) - 1);
-          PFC_montant := 0;
-        end if;
-      end if;
+  --  elsif (PFC_mode = '1') then --Phase and frequency correct PWM
+  --    if (cpt_interne < OCR1x_in)  then
+  --      OC1x_interne <= '0';
+  --      if PFC_montant = 1 or  cpt = "00000000" then
+  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) + 1);
+  --        PFC_montant := 1;
+  --      elsif PFC_montant = 0 then
+  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) - 1);
+  --      end if;
+  --    elsif (cpt_interne <= "11111111") then
+  --      OC1x_interne <= '1';
+  --      if PFC_montant = 1 then
+  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) + 1);
+  --      elsif PFC_montant = 0 or cpt = "11111111" then
+  --        cpt_interne <= std_logic_vector(unsigned(cpt_interne) - 1);
+  --        PFC_montant := 0;
+  --      end if;
+  --    end if;
     end if;
 
     if (active = '1') then
@@ -82,6 +82,6 @@ begin
       OC1x <= '1';
       OC1xbar <= '0';
     end if;
-    data_out <= cpt;
+    data_out <= cpt_interne;
   end process;
 end architecture;
