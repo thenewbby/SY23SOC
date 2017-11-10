@@ -1,7 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use ieee.std_logic_unsigned.all;
-use work.all;
+Use ieee.std_logic_unsigned.all;
 
 -- diviseur programmable
 -- clk : horloge systeme
@@ -11,9 +10,10 @@ use work.all;
 -- tc : impulsion de largeur clk sur le front montant ou descendant de clk_out
 -- clk_out : horloge divisee de rapport  cyclique 1/2
 entity diviseur_programmable is
+    Generic(Nbits : integer := 32);
     Port ( clk : in  STD_LOGIC;
            rst : in  STD_LOGIC;
-           clkdiv : in std_logic_vector(31 downto 0);
+           clkdiv : in std_logic_vector(Nbits-1 downto 0);
            phase : in STD_LOGIC;
            polarite : in STD_LOGIC;
            tc : out  STD_LOGIC;
@@ -23,11 +23,11 @@ end diviseur_programmable;
 architecture architecture_diviseur_programmable of diviseur_programmable is
 
 
-signal cpt : std_logic_vector(31 downto 0);
+signal cpt : std_logic_vector(Nbits-1 downto 0);
 signal clk_pol : std_logic;
-signal clk_div : std_logic_vector(31 downto 0);
+signal clk_div : std_logic_vector(Nbits-1 downto 0);
 -- un signal par phase
-signal clk_div1,clk_div2 : std_logic_vector(31 downto 0);
+signal clk_div1,clk_div2 : std_logic_vector(Nbits-1 downto 0);
 
 begin
 
@@ -66,7 +66,7 @@ begin
 
 	-- calcul des impulsions de sortie front montant ou descendant
 	clk_div1 <= clkdiv-1;
-	clk_div2 <= '0' & clk_div1(31 downto 1);
+	clk_div2 <= '0' & clk_div1(Nbits-1 downto 1);
 
 	-- choix de l'impulsion en fonction de la phase
 	clk_div <= clk_div1 when phase = '0' else

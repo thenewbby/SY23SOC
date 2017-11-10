@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
+
 entity PWM is -- Tu utilisais PWM et pas PWM_1
   port (  cpt, OCR1x_in : in std_logic_vector(7 downto 0);
           data_out : out std_logic_vector(7 downto 0);
@@ -11,6 +12,7 @@ entity PWM is -- Tu utilisais PWM et pas PWM_1
 end entity;
 
 architecture arch_PWM of PWM is
+
   --signal cpt : std_logic_vector(7 downto 0);
   signal OC1x_interne : std_logic;
   signal cpt_interne, cpt_interne_next : std_logic_vector(7 downto 0);
@@ -21,6 +23,7 @@ begin
   -- OC1x <= '0'; -- Ici, tu disais de mettre OC1x toujours à 0
   --OC1x <= OC1x_interne; -- J'ai cablé OC1x_interne à la sortie
   --OC1xbar <= not OC1x_interne; -- et son inverse
+
 
   pwm_proc : process(clk, rst, active)
     variable PFC_montant : natural;
@@ -83,5 +86,6 @@ begin
       OC1xbar <= '0';
     end if;
     data_out <= cpt_interne_next;
+
   end process;
 end architecture;
