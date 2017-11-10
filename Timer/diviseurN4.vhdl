@@ -23,30 +23,10 @@ signal null_vect : std_logic_vector(N-1 downto 0);
 signal undet_vect : std_logic_vector(N-1 downto 0);
 begin
 
-	null_vect <= (others => '0');
-  undet_vect <= (others => 'U');
-
-counter : process(clk, rst, cpt, clk_div,pow_div)
+counter : process(cpt, clk_div,pow_div)
 begin
   null_vect <= (others => '0');
   undet_vect <= (others => 'U');
-  if (pow_div = null_vect) or (pow_div = undet_vect)then
-    clk_interne <= '0';
-  else
-    clk_div <= 2**(to_integer(unsigned(pow_div)) -1);
-
-	if rst = '1' then
-
-		cpt_next <= 0;
-		state:=0;
-
-	else if rising_edge(clk) then
-
-		cpt <= cpt_next;
-
-		end if;
-
-
   if (pow_div = null_vect) or (pow_div = undet_vect)then
     clk_interne <= '0';
   else
@@ -59,9 +39,7 @@ begin
          cpt_next <= cpt +1;
          clk_interne <= '0';
      end if;
-	 end if;
   end if;
-end if;
 end process counter;
 clock_out : process(clk_interne)
 begin
@@ -73,4 +51,21 @@ begin
 		state := 1;
 	end if;
 end process;
+synchro : process(clk, rst)
+begin
+
+	if rst = '1' then
+
+		cpt <= 0;
+		state:=0;
+
+	else if rising_edge(clk) then
+
+		cpt <= cpt_next;
+
+		end if;
+	end if;
+
+end process synchro;
+
 end Behavioral;
