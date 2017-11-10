@@ -26,7 +26,7 @@ begin
 	null_vect <= (others => '0');
   undet_vect <= (others => 'U');
 
-counter : process(clk, rst, cpt, clk_div,pow_div)
+counter : process(clk, rst, cpt, clk_div,pow_div, clk_interne)
 begin
 
 	if rst = '1' then
@@ -34,10 +34,19 @@ begin
 		cpt_next <= 0;
 		state:=0;
 
-	else if rising_edge(clk) then
+	else
+		if rising_edge(clk) then
 
 		cpt <= cpt_next;
 
+		end if;
+
+		if rising_edge(clk_interne) and state = 1 then
+				clk_out <= '0';
+				state := 0;
+		elsif rising_edge(clk_interne) and state = 0 then
+			clk_out <= '1';
+			state := 1;
 		end if;
 
 
@@ -56,15 +65,5 @@ begin
 	 end if;
   end if;
 end process counter;
-clock_out : process(clk_interne)
-begin
-  if rising_edge(clk_interne) and state = 1 then
-      clk_out <= '0';
-			state := 0;
-	elsif rising_edge(clk_interne) and state = 0 then
-		clk_out <= '1';
-		state := 1;
-	end if;
-end process;
 
 end Behavioral;
