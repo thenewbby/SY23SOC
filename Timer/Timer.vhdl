@@ -137,6 +137,14 @@ divGeneral : diviseurN4 port map(
         elsif rdwr = "01" then
           reg_TCCR1A <= iowrite;
         end if;
+
+			elsif adr_int = TCCR1D then
+
+				if rdwr = "10" then
+					ioread <= reg_TCCR1D;
+				elsif rdwr = "01" then
+					reg_TCCR1D <= iowrite;
+				end if;
       end if;
 
 			if (reg_TCCR1D(0) = '0') then --Fast PWM Mode

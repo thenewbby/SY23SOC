@@ -13,7 +13,7 @@ ARCHITECTURE behavior OF prediviseur_tb IS
     COMPONENT prediviseur
     Generic(N : positive := 2);
     Port (  clk : in std_logic;
-            rst : in std_logic;
+            rst, rst_addr : in std_logic;
             pow_div : in std_logic_vector(N-1 downto 0);
             clk_out : out std_logic
            );
@@ -23,6 +23,7 @@ ARCHITECTURE behavior OF prediviseur_tb IS
    --Inputs
    signal clk_tb : std_logic := '0';
    signal rst_tb : std_logic := '1';
+   signal rst_addr_tb : std_logic := '0';
    signal pow_div_tb : std_logic_vector(1 downto 0);
 
  	--Outputs
@@ -44,6 +45,7 @@ BEGIN
    uut: prediviseur PORT MAP (
           clk => clk_tb,
           rst => rst_tb,
+          rst_addr => rst_addr_tb,
           pow_div => pow_div_tb,
           clk_out => clk_out_tb
         );

@@ -15,7 +15,7 @@ architecture arch_PWM of PWM is
 
   --signal cpt : std_logic_vector(7 downto 0);
   signal OC1x_interne : std_logic;
-  signal cpt_interne, cpt_interne_next : std_logic_vector(7 downto 0);
+  -- signal cpt_interne, cpt_interne_next : std_logic_vector(7 downto 0);
 begin
   --if force = '1' generate
   --  OC1x <= '1';
@@ -37,9 +37,9 @@ begin
       if (PFC_mode = '0') then --Fast PWM Mode
         -- cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
 
-        if cpt_interne < OCR1x_in then
+        if cpt < OCR1x_in then
           OC1x_interne <= '0';
-        elsif (cpt_interne < "11111111") then
+        elsif (cpt < "11111111") then
           OC1x_interne <= '1';
         --else
         --  OC1x_interne <= '0';
@@ -47,7 +47,7 @@ begin
         end if;
       end if;
    elsif (PFC_mode = '1') then --Phase and frequency correct PWM
-     if (cpt_interne < OCR1x_in)  then
+     if (cpt < OCR1x_in)  then
        OC1x_interne <= '0';
        if PFC_montant = 1 or  cpt = "00000000" then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
@@ -55,7 +55,7 @@ begin
       --  elsif PFC_montant = 0 then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) - 1);
        end if;
-     elsif (cpt_interne <= "11111111") then
+     elsif (cpt <= "11111111") then
        OC1x_interne <= '1';
       --  if PFC_montant = 1 then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);

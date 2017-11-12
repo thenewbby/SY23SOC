@@ -2,12 +2,13 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use ieee.numeric_std.all;
+use IEEE.math_real.all;
 use work.all;
 
 entity prediviseur is
 Generic(N : positive := 2);
 Port (	clk : in std_logic;
-		rst : in std_logic;
+		rst, rst_addr : in std_logic;
 		pow_div : in std_logic_vector(N-1 downto 0);
 		clk_out : out std_logic
 	 );
@@ -19,13 +20,17 @@ shared variable state : integer;
 signal cpt, cpt_next, clk_div : integer;
 signal clk_interne : std_logic;
 signal null_vect : std_logic_vector(N-1 downto 0);
-signal undet_vect : std_logic_vector(N-1 downto 0);
 begin
 
-counter : process(cpt, clk_div,pow_div)
-begin
+null_vect <= (others => '0');
 
-  clk_div <= 2**to_integer(unsigned(pow_div))-1;
+counter : process(cpt, clk_div, pow_div)
+begin
+	if pow_div = null_vect then
+		clk_div <= 0;
+	else
+		clk_div <= 2 ** (to_integer(unsigned(pow_div)-1));
+	end if;
 
  if cpt = clk_div then
      clk_interne <= '1';
@@ -47,10 +52,10 @@ begin
 	end if;
 end process;
 
-synchro : process(clk, rst)
+synchro : process(clk, rst, rst_addr)
 begin
 
-	if rst = '1' then
+	if rst = '1' or rst_addr = '1' then
 
 		cpt <= 0;
 		state := 0;

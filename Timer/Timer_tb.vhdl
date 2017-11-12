@@ -100,8 +100,12 @@ begin
       iowrite_tb <= "00100011";
       wait for 20 ns;
 
-      addr_tb <= "110000"; --16#2F# Init TCCR1B
+      addr_tb <= "110000"; --16#30# Init TCCR1
       iowrite_tb <= "01000010"; --Init TCCR1A
+      wait for 20 ns;
+
+      addr_tb <= "100110"; --16#26# Init TCCR1D
+      iowrite_tb <= "00000000";
       wait for 20 ns;
 
       wr_tb <= '0';
