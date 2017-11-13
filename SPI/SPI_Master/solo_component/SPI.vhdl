@@ -39,14 +39,15 @@ architecture arch of SPI is
   signal cpt, cpt_next : STD_LOGIC_VECTOR (3 downto 0);
   signal next_data, data : STD_LOGIC_VECTOR (7 downto 0);
   signal divclk, divrst, clk_divPuls : STD_LOGIC;
+  signal phase_clk, polarite_clk :STD_LOGIC;
 
   begin
   clkDiv : diviseur_programmable generic map (Nbits => 16)
   port map(clk =>clk,
           rst =>rst,
           clkdiv =>clk_division,
-          phase => '0' ,
-          polarite => '0',
+          phase => phase_clk ,
+          polarite => polarite_clk,
           tc =>clk_divPuls,
           clk_out =>divclk);
 
@@ -78,6 +79,8 @@ architecture arch of SPI is
           cpt_next <= (others => '0');
           SPI_CS <= '1';
           SPI_SCK <= '0';
+          phase_clk <= '0';
+          polarite_clk <= '0';
           next_data <= data_in;
           if spi_start = '1' then
               next_etat <= bitsdatawrite;
@@ -112,6 +115,8 @@ architecture arch of SPI is
       when bitsdataread =>
           SPI_CS <= '0';
           SPI_SCK <= divclk;
+          polarite_clk <= '1';
+          phase_clk <= '1';
           if cpt = "1000" then
               data_out <= data;
               next_etat <= idle;
