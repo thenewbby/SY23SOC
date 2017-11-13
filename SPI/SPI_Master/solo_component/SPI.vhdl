@@ -4,22 +4,24 @@ use IEEE.numeric_std.all;
 
 entity SPI is
   port (
-  data_in : in  STD_LOGIC_VECTOR (7 downto 0);
-  SPI_MISO : in STD_LOGIC;
-  spi_start : in STD_LOGIC;
-  rst : in STD_LOGIC;
-  clk : in STD_LOGIC;
-  clk_division : in  STD_LOGIC_VECTOR (15 downto 0);
-
-  SPI_CS : out STD_LOGIC;
-  SPI_SCK : out STD_LOGIC;
-  SPI_MOSI : out  STD_LOGIC;
-  data_out: out std_logic_vector(7 downto 0)
+        -- Inputs
+        data_in : in  STD_LOGIC_VECTOR (7 downto 0);
+        SPI_MISO : in STD_LOGIC;
+        spi_start : in STD_LOGIC;
+        rst : in STD_LOGIC;
+        clk : in STD_LOGIC;
+        clk_division : in  STD_LOGIC_VECTOR (15 downto 0);
+        -- outputs
+        SPI_CS : out STD_LOGIC;
+        SPI_SCK : out STD_LOGIC;
+        SPI_MOSI : out  STD_LOGIC;
+        data_out: out std_logic_vector(7 downto 0)
   );
 end entity;
 
 architecture arch of SPI is
 
+  -- composant diviseur programmable
   component diviseur_programmable is
       Generic(Nbits : integer := 32);
       Port ( clk : in  STD_LOGIC;
@@ -31,6 +33,7 @@ architecture arch of SPI is
              clk_out : out  STD_LOGIC);
   end component;
 
+  -- definitions signaux
   type Etats is (idle, bitsdatawrite, idle_btw, bitsdataread);
   signal next_etat, etat : Etats;
   signal cpt, cpt_next : STD_LOGIC_VECTOR (3 downto 0);
@@ -47,6 +50,7 @@ architecture arch of SPI is
           tc =>clk_divPuls,
           clk_out =>divclk);
 
+  -- process etat
   registre_etat : process(clk,rst)
   begin
   if rst = '1' then
@@ -56,8 +60,9 @@ architecture arch of SPI is
       data <= next_data;
       cpt <= cpt_next;
   end if;
-end process registre_etat;
+  end process registre_etat;
 
+  -- process logic_etat
   logic_etat: process(clk_divPuls, spi_start, etat, clk)
 
   begin
@@ -67,6 +72,7 @@ end process registre_etat;
   cpt_next <= cpt;
 
   case etat is
+    -- etat attente
       when idle =>
           SPI_MOSI <= '0';
           cpt_next <= (others => '0');
@@ -77,6 +83,7 @@ end process registre_etat;
               next_etat <= bitsdatawrite;
           end if;
 
+      -- etat ecriture
       when bitsdatawrite =>
           SPI_CS <= '0';
           SPI_MOSI <= data(7);
@@ -89,29 +96,29 @@ end process registre_etat;
               cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
           end if;
 
-          when idle_btw =>
-            SPI_MOSI <= '0';
-            -- cpt_next <= (others => '0');
-            SPI_CS <= '1';
-            SPI_SCK <= '0';
-              -- next_data <= data_in;
-              if clk_divPuls = '1' then
-                  cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
-              elsif cpt = "0011" then
-                cpt_next <= (others => '0');
-                next_etat <= bitsdataread;
-              end if;
+      -- etat attende pour lecture
+      when idle_btw =>
+        SPI_MOSI <= '0';
+        SPI_CS <= '1';
+        SPI_SCK <= '0';
+        if clk_divPuls = '1' then
+            cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
+        elsif cpt = "0011" then
+          cpt_next <= (others => '0');
+          next_etat <= bitsdataread;
+        end if;
 
-          when bitsdataread =>
-              SPI_CS <= '0';
-              SPI_SCK <= divclk;
-              if cpt = "1000" then
-                  data_out <= data;
-                  next_etat <= idle;
-              elsif clk_divPuls = '1' then
-                  next_data <= data(6 downto 0) & SPI_MISO ;
-                  cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
-              end if;
+      -- etat lecture
+      when bitsdataread =>
+          SPI_CS <= '0';
+          SPI_SCK <= divclk;
+          if cpt = "1000" then
+              data_out <= data;
+              next_etat <= idle;
+          elsif clk_divPuls = '1' then
+              next_data <= data(6 downto 0) & SPI_MISO ;
+              cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
+          end if;
 
       end case;
   end process logic_etat;
