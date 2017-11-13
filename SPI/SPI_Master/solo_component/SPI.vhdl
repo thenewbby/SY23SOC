@@ -79,13 +79,13 @@ end process registre_etat;
 
       when bitsdatawrite =>
           SPI_CS <= '0';
-          SPI_MOSI <= data(0);
+          SPI_MOSI <= data(7);
           SPI_SCK <= divclk;
           if cpt = "1000" then
               next_etat <= idle_btw;
               cpt_next <= (others => '0');
           elsif clk_divPuls = '1' then
-              next_data <= '0' & data(7 downto 1);
+              next_data <= data(6 downto 0) & '0';
               cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
           end if;
 
@@ -109,7 +109,7 @@ end process registre_etat;
                   data_out <= data;
                   next_etat <= idle;
               elsif clk_divPuls = '1' then
-                  next_data <= SPI_MISO & data(7 downto 1);
+                  next_data <= data(6 downto 0) & SPI_MISO ;
                   cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
               end if;
 
