@@ -105,8 +105,8 @@ begin
       spi_start_tb <= '0';
     wait for 100 ns;
       SPI_MISO_tb <= '1';
-    wait for 10000 ns;
-      rst_tb <= '0';
+    wait for 65000 ns;
+      SPI_MISO_tb <= '0';
 
 
      wait;
