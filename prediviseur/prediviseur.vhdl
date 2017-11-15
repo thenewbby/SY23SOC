@@ -46,7 +46,7 @@ begin
 		-- 	state := 1;
 		-- end if;
 
-    clk_div <= 2**(to_integer(unsigned(pow_div)) -1);
+    clk_div <= 2**(to_integer(unsigned(pow_div)-1));
 
      if cpt = clk_div then
          clk_interne <= '1';
