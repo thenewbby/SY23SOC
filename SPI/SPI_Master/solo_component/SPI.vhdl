@@ -80,7 +80,7 @@ architecture arch of SPI is
           SPI_CS <= '1';
           SPI_SCK <= '0';
           phase_clk <= '0';
-          polarite_clk <= '0';
+          polarite_clk <= '1';
           next_data <= data_in;
           if spi_start = '1' then
               next_etat <= bitsdatawrite;
@@ -94,6 +94,7 @@ architecture arch of SPI is
           if cpt = "1000" then
               next_etat <= idle_btw;
               cpt_next <= (others => '0');
+              SPI_SCK <= '0';
           elsif clk_divPuls = '1' then
               next_data <= data(6 downto 0) & '0';
               cpt_next <= STD_LOGIC_VECTOR(unsigned(cpt) + 1);
