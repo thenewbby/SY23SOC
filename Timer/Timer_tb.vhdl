@@ -85,32 +85,32 @@ begin
       rst_tb <= '1';
       wr_tb <= '1';
       rd_tb <= '0';
-      wait for 20 ns;
+      wait for 100 ns;
 
-      addr_tb <= "101101"; --16#2D#
+      addr_tb <= "101101"; --16#2D# Registre OCR1A
       rst_tb <= '0';
-      iowrite_tb <= "11100000";
+      iowrite_tb <= "11100000"; --Envoie de la valeur 224/255
       wait for 20 ns;
 
       addr_tb <= "101110"; --16#2E# Init TCNT1
-      iowrite_tb <= "00000000";
+      iowrite_tb <= "00000000"; -- Compteur initialisé à 0
       wait for 20 ns;
 
       addr_tb <= "101111"; --16#2F# Init TCCR1B
-      iowrite_tb <= "00100011";
+      iowrite_tb <= "00100011"; -- prédiviseur par 2² et diviseur par 2²
       wait for 20 ns;
 
-      addr_tb <= "110000"; --16#30# Init TCCR1
-      iowrite_tb <= "01000010"; --Init TCCR1A
+      addr_tb <= "110000"; --16#30# Init TCCR1A
+      iowrite_tb <= "01000010"; --Comparateur A mode 01; Active mode PWMA
       wait for 20 ns;
 
       addr_tb <= "100110"; --16#26# Init TCCR1D
-      iowrite_tb <= "00000000";
+      iowrite_tb <= "00000000"; --Non utilisé
       wait for 20 ns;
 
       wr_tb <= '0';
-      rd_tb <= '1';
-      addr_tb <= "101110";
+      rd_tb <= '1'; -- Simultaion de lecture des registres
+      addr_tb <= "101110"; -- demande de lecture du registre TCNT1
       wait for 10000 ns;
    end process;
 

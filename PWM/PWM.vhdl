@@ -2,7 +2,9 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use ieee.numeric_std.all;
 
-entity PWM is -- Tu utilisais PWM et pas PWM_1
+entity PWM is
+-- Pour comprendre le rôle de chaque signal, consulter le fichier Timer.vhdl,
+-- Section Port map du composant
   port (  cpt, OCR1x_in : in std_logic_vector(7 downto 0);
           data_out : out std_logic_vector(7 downto 0);
           mode_sortie : in std_logic_vector(1 downto 0);
