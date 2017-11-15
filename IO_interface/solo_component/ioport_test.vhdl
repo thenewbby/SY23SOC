@@ -96,7 +96,7 @@ begin
     wait for 100 ns;
 
     -- ecriture dans le registre PORTA
-      iowrite_tb <= "00000000";
+      iowrite_tb <= "01000100";
       addr_tb <= "011011"; --1B
     wait for 10 ns;
       wr_tb <= '1';
