@@ -104,8 +104,10 @@ begin
     wait for 100 ns;
       spi_start_tb <= '0';
     wait for 100 ns;
+      SPI_MISO_tb <= '0';
+    wait for 42000 ns;
       SPI_MISO_tb <= '1';
-    wait for 65000 ns;
+    wait for 22000 ns;
       SPI_MISO_tb <= '0';
 
 
