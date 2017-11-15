@@ -98,8 +98,9 @@ begin
       clk_division_tb <= DIVTX ;
       rst_tb <= '1';
       data_in_tb <= "10110111";
-    wait for 100 ns;
+    wait for 500 ns;
       rst_tb <= '0';
+    wait for 500 ns;
       spi_start_tb <= '1';
     wait for 100 ns;
       spi_start_tb <= '0';
