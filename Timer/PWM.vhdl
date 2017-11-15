@@ -45,25 +45,25 @@ begin
         --  OC1x_interne <= '0';
         --  cpt_interne <= (others => '0');
         end if;
-      end if;
-   elsif (PFC_mode = '1') then --Phase and frequency correct PWM
-     if (cpt < OCR1x_in)  then
-       OC1x_interne <= '0';
-       if PFC_montant = 1 or  cpt = "00000000" then
+      elsif (PFC_mode = '1') then --Phase and frequency correct PWM
+        if (cpt < OCR1x_in)  then
+          OC1x_interne <= '0';
+          if PFC_montant = 1 or  cpt = "00000000" then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
-         PFC_montant := 1;
+            PFC_montant := 1;
       --  elsif PFC_montant = 0 then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) - 1);
-       end if;
-     elsif (cpt <= "11111111") then
-       OC1x_interne <= '1';
+          end if;
+        elsif (cpt <= "11111111") then
+          OC1x_interne <= '1';
       --  if PFC_montant = 1 then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) + 1);
-       if PFC_montant = 0 or cpt = "11111111" then
+          if PFC_montant = 0 or cpt = "11111111" then
         --  cpt_interne_next <= std_logic_vector(unsigned(cpt_interne) - 1);
-         PFC_montant := 0;
-       end if;
-     end if;
+            PFC_montant := 0;
+          end if;
+        end if;
+      end if;
     end if;
 
     if (active = '1') then
