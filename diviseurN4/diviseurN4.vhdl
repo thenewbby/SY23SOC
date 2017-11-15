@@ -32,6 +32,7 @@ begin
 	if rst = '1' then
 
 		cpt_next <= 0;
+		cpt <= 0;
 		-- state:=0;
 
 	else
