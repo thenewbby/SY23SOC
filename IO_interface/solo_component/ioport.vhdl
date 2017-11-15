@@ -67,11 +67,11 @@ begin
 
 				--mise à jours du port
 	      read_write : for i in 0 to 7 loop
-	        if ddr_reg(i) = '1' then --sortie
+	        if ddr_reg(i) = '1' then --si le port est en sortie
 	          ioport(i) <= port_reg(i);
-	          pin_reg(i) <= '0';
-	        elsif ddr_reg(i) = '0' then --entrée
-						port_reg(i) <= 'Z';
+	          pin_reg(i) <= '0'; -- le bit associé dans pin est mis à 0
+	        elsif ddr_reg(i) = '0' then --si le port est en entrée
+						port_reg(i) <= 'Z'; -- le bit associé dans port est mis en haute impédance
 	          pin_reg(i) <= ioport(i);
 	        end if;
 	      end loop;
