@@ -41,6 +41,7 @@ begin
 			--reset
 	    if Rst = '1' then
 	      ddr_reg <= (others =>'0');
+				ioread <= (others => '0');
 
 	    elsif rising_edge(clk) then
 	      adr_int := CONV_INTEGER(unsigned(addr));
