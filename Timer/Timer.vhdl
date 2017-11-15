@@ -21,7 +21,6 @@ architecture timer_architecture of timer is
 
 COMPONENT PWM
 Port (cpt, OCR1x_in : in std_logic_vector(7 downto 0);
-				-- data_out : out std_logic_vector(7 downto 0);
 				mode_sortie : in std_logic_vector(1 downto 0);
 				force, active, PFC_mode, out_inverse, rst, clk : in std_logic;
 				OC1x, OC1xbar : out std_logic
