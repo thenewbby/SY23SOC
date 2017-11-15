@@ -2,6 +2,7 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use ieee.numeric_std.all;
+use ieee.math_real.all;
 use work.all;
 
 entity diviseurN4 is
@@ -30,7 +31,6 @@ begin
 
 	if rst = '1' then
 
-		cpt <= 0;
 		cpt_next <= 0;
 		-- state:=0;
 
@@ -53,7 +53,7 @@ begin
   if (pow_div = null_vect) then
     clk_interne <= '0';
   else
-    clk_div <= 2**(to_integer(unsigned(pow_div)-1));
+    clk_div <= 2**(to_integer(unsigned(pow_div)) -1);
 
      if cpt = clk_div then
          clk_interne <= '1';
