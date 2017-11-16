@@ -1,5 +1,6 @@
 CC=ghdl
 PROG=microcontroleur
+MOD1= diviseurN4.vhdl PWM.vhdl prediviseur.vhdl
 SRC=$(PROG).vhdl
 VCD=$(PROG).vcd
 SRCTB=$(PROG)_test.vhdl
@@ -18,6 +19,7 @@ test:
 	$(CC) -s $(OPTIONS) $(SRC)
 
 compile:
+	$(CC) -a $(AOPTIONS) $(OPTIONS) $(MOD1)
 	$(CC) -a $(AOPTIONS) $(OPTIONS) $(COMPOSANT)
 	$(CC) -a $(AOPTIONS) $(OPTIONS) $(SRC)
 	$(CC) -s $(OPTIONS) $(SRCTB)

@@ -16,6 +16,7 @@ end diviseurN4;
 
 architecture Behavioral of diviseurN4 is
 
+-- shared variable state : integer;
 
 signal cpt, cpt_next, clk_div : integer;
 signal clk_interne : std_logic;
