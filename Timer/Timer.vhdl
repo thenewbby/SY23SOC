@@ -91,7 +91,7 @@ divGeneral : diviseurN4 port map(
 
 );
 
-  proc : process(clk, rst)
+  proc : process(clk,clk_PWM, rst)
     variable adr_int : natural;
     variable rdwr : std_logic_vector(1 downto 0); --concaténation du signal rd et wr
 
@@ -147,7 +147,8 @@ divGeneral : diviseurN4 port map(
 					reg_TCCR1D <= iowrite;
 				end if;
       end if;
-
+		end if;
+		if rising_edge(clk_PWM) then
 			if (reg_TCCR1D(0) = '0') then --Fast PWM Mode
         reg_TCNT1 <= std_logic_vector(unsigned(reg_TCNT1) + 1);
 

@@ -111,7 +111,7 @@ begin
       wr_tb <= '0';
       rd_tb <= '1'; -- Simultaion de lecture des registres
       addr_tb <= "101110"; -- demande de lecture du registre TCNT1
-      wait for 10000 ns;
+      wait for 100000 ns;
    end process;
 
    resultats: process(clk_te)
