@@ -10,7 +10,7 @@ ENTITE=$(PROG)_tb
 OPTIONS= --ieee=synopsys -fexplicit
 AOPTIONS= -Wc,-m32 -Wa,--32
 EOPTIONS= -Wa,--32 -Wl,-m32
-STOPTIME=50000ns
+STOPTIME=200000ns
 
 all:
 	$(CC) -a $(AOPTIONS) $(OPTIONS) $(MOD1)
